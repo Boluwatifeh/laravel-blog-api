@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-    //
+    //Register a new user 
     public function register(Request $request)
     {
         // Validate the request data
@@ -37,4 +37,26 @@ class AuthController extends Controller
             'token' => $token,
         ], 201);
     }
+
+     // Login a user
+     public function login(Request $request)
+     {
+         $validatedData = Validator::make($request->all(), [
+             'email' => 'required|string|email',
+             'password' => 'required|string',
+         ]);
+         if ($validatedData->fails()) {
+             return response()->json($validatedData->errors(), 422);
+         }
+         $user = User::where('email', $request->email)->first();
+         if (!$user || !password_verify($request->password, $user->password)) {
+             return response()->json(['message' => 'Invalid credentials'], 401);
+         }
+         $token = $user->createToken('Personal Access Token')->plainTextToken;
+         return response()->json([
+             'message' => 'User logged in successfully',
+             'user' => $user,
+             'token' => $token,
+         ], 200);
+     }
 }
