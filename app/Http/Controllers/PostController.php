@@ -83,5 +83,17 @@ class PostController extends Controller
     
         return response()->json(['message' => 'Post deleted successfully']);
     }
+
+    // Get a single post
+    public function getPost($id)
+    {
+        $post = Post::find($id);
+    
+        if (!$post) {
+            return response()->json(['message' => 'Post not found'], 404);
+        }
+    
+        return response()->json($post);
+    } 
     
 }
