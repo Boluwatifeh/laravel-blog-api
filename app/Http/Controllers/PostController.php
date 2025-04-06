@@ -40,5 +40,34 @@ class PostController extends Controller
         $posts = Post::all();
         return response()->json($posts);
     } 
+
+    // Edit post
+    public function editPost(Request $request, $id)
+    {
+        // Validate the request data
+        $validatedData = Validator::make($request->all(), [
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+        ]);
+    
+        if ($validatedData->fails()) {
+            return response()->json($validatedData->errors(), 422);
+        }
+    
+        // Find the post by ID
+        $post = Post::find($id);
+    
+        if (!$post) {
+            return response()->json(['message' => 'Post not found'], 404);
+        }
+    
+        // Update the post
+        $post->update($validatedData->validated());
+    
+        return response()->json([
+            'message' => 'Post updated successfully',
+            'post' => $post,
+        ]);
+    }
     
 }

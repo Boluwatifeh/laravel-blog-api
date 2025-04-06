@@ -26,4 +26,5 @@ Route::middleware("auth:sanctum")->group(function () {
     // Add other routes that require authentication here
     Route::post("/posts", [PostController::class, "createPost"]);
     Route::get("/posts", [PostController::class, "getPosts"]);
+    Route::put("/posts/{id}", [PostController::class, "editPost"]);
     });
